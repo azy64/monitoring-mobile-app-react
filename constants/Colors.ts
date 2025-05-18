@@ -23,4 +23,12 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
+  tunawezaRed:{
+    hexa:"#eb1144",
+    rgb:"rgba(235,17,68,255)"
+  },
+  tunawezaBlue:{
+    hexa:"#043b4d",
+    rgb:"rgba(4,59,77,255)"
+  }
 };
