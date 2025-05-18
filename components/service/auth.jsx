@@ -1,6 +1,6 @@
 import CONSTANTS from "@/constants/constants";
 
-function loginUser(username,password,callBack){
+const loginUser=(username,password,callBack)=>{
     let requestHeader = new Headers();
     requestHeader.set("Content-Type","application/json");
     fetch(CONSTANTS.AUTH_LOGIN,{

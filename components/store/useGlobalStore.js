@@ -1,7 +1,7 @@
 import CONSTANTS from "@/constants/constants";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
+import loginUser from "@/components/service/auth";
 
 const useGlobalStore= create(persist((set)=>({
     token:null,
