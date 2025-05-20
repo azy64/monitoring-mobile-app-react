@@ -1,11 +1,11 @@
 import Loader from "@/components/screens/Loader";
+import { Colors } from "@/constants/Colors";
 import { useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Dimensions, StyleSheet, View } from "react-native";
-import { Avatar, Button, Divider, Text, TextInput, Snackbar } from 'react-native-paper';
+import { Avatar, Button, Divider, Snackbar, TextInput } from 'react-native-paper';
 import useGlobalStore from '../store/useGlobalStore';
-import { Colors } from "@/constants/Colors";
 
 
 const Login = () => {
@@ -21,13 +21,26 @@ const Login = () => {
     const loading = useGlobalStore(state => state.loading);
     const login = useGlobalStore(state => state.login);
     const user = useGlobalStore(state => state.user);
+    const updateShift = useGlobalStore(state=>state.updateShift);
 
     const onDismissSnackBar = () => setVisible(false);
+
     const onSubmit = (data) => {
-        console.log("data:", email, password);
         if (email && password) {
             login({ username: email, password });
-            if (user) router.navigate("/main");
+            if (user) {
+                shiftCreationDate= new Date();
+                const shift={agent:{id:user.id}, 
+                shiftStartTime:shiftCreationDate, 
+                shiftDate:shiftCreationDate,
+                shiftEndTime:null,
+                around:null
+            }
+                console.log("shift:",shift);
+                updateShift(shift);
+                router.navigate("/main");
+                
+            }
         }
         else setVisible(true);
 
