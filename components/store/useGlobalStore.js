@@ -1,4 +1,4 @@
-import loginUser, { saveShift } from "@/components/service/authService";
+import loginUser, { saveCheckPoint, saveShift } from "@/components/service/authService";
 import CONSTANTS from "@/constants/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
@@ -9,9 +9,10 @@ const useGlobalStore= create(persist((set)=>({
     token:null,
     refreshToken:null,
     shift:initValue,
+    error:{},
     controlPoint:{},
     around:{},
-    currentLabel:"",
+    currentLabel:[],
     checkPoints:[],
     sinister:"",
     user:{},
@@ -25,9 +26,9 @@ const useGlobalStore= create(persist((set)=>({
     updateShift(data){
         set((state)=>({...state,shift:data}));
     },
-    logout(){
-        endShift();
-        //saveShift(token,shift);
+    logout(token, shift){
+        //endShift();
+        saveShift(token,shift);
         logOutOf();
     },
     setSinister(value){
@@ -36,15 +37,21 @@ const useGlobalStore= create(persist((set)=>({
     updateCheckPoint(newValue){
         set({checkPoints:newValue});
     },
-    updateConrolPoint(value){
+    updateControlPoint(value){
         set({controlPoint:{id:value}});
     },
     updateAround(value){
-        set({Around:{id:value}});
+        set({around:{id:value}});
     },
     updateLabel(value){
         set({currentLabel:value});
-    }
+    },
+    createCheckPoint(token,payload){
+        saveCheckPoint(token,payload,checkPointCallBack);
+    },
+    updateError(value){
+        set({error:value});
+    },
 
 }),{name:CONSTANTS.STORE_NAME, storage: createJSONStorage(() =>  AsyncStorage),}))
 
@@ -56,12 +63,23 @@ const setUser=(data)=>{
     }
     ))
 }
-const endShift=()=>{
+export const endShift=()=>{
     useGlobalStore.setState((state)=>({
         ...state, shift:{...state.shift,shiftEndTime:new Date(),around:state.around}
     }))
 }
 const logOutOf=()=>{
+    //console.log("****State before deconnect:****", useGlobalStore.getState())
     useGlobalStore.persist.clearStorage();
+    //console.log("***Deconnect:***", useGlobalStore.getState())
+}
+const checkPointCallBack=(data)=>{
+    if(!data.id){
+        useGlobalStore.setState((state)=>({
+            ...state, error:{checkPointError:500},
+            checkPoints:[...state.checkPoints].slice(0,state.checkPoints.length-1),
+            currentLabel:[...state.currentLabel].slice(0,state.currentLabel.length-1)
+        }))
+    }
 }
 export default useGlobalStore;

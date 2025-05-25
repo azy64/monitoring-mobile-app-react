@@ -23,6 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="auth" options={{ headerShown:false}} />
         <Stack.Screen name="main" options={{ headerShown:false}} />
         <Stack.Screen name="scanner" options={{ title:"QrCode",}} />
+        <Stack.Screen name="view" options={{ title:"All my Checked-Point"}} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

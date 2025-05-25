@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Button, Snackbar } from 'react-native-paper';
 
 const Snack = ({message}) => {
-    const [visible, setVisible] = React.useState(false);
+    const [visible, setVisible] = React.useState(true);
 
     const onToggleSnackBar = () => setVisible(!visible);
 
@@ -11,12 +11,12 @@ const Snack = ({message}) => {
 
     return (
         <View style={styles.container}>
-            <Button onPress={onToggleSnackBar}>{visible ? 'Hide' : 'Show'}</Button>
+           {/** <Button onPress={onToggleSnackBar}>{visible ? 'Hide' : 'Show'}</Button>*/}
             <Snackbar
                 visible={visible}
                 onDismiss={onDismissSnackBar}
                 action={{
-                    label: 'Undo',
+                    label: 'close',
                     onPress: () => {
                         // Do something
                     },
