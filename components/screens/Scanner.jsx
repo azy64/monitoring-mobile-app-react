@@ -1,22 +1,23 @@
+import Snack from '@/components/screens/Snack';
+import TunawezaDialog from '@/components/screens/TunawezaDialog';
+import decodeMessage from '@/components/service/utilitiesService';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import TunawezaDialog from '@/components/screens/TunawezaDialog';
-import decodeMessage from '@/components/service/utilitiesService';
 import useGlobalStore from '../store/useGlobalStore';
-import Snack from '@/components/screens/Snack';
-import { State } from 'react-native-gesture-handler';
 
 export default function Scanner() {
     const [facing, setFacing] = useState("back");
     const [permission, requestPermission] = useCameraPermissions();
     const [show, setShow] = useState(false);
     const [showSnack, setShowSnack] = useState(false);
+    const [noValide, setNoValide] = useState(false);
     const router = useRouter();
     const updateControlPoint = useGlobalStore(state => state.updateControlPoint);
-    const updateAround = useGlobalStore(state => state.around);
+    const updateAround = useGlobalStore(state => state.updateAround);
     const currentLabel = useGlobalStore(state => state.currentLabel);
+    const updateLabel = useGlobalStore(state => state.updateLabel);
 
     if (!permission) {
         // Camera permissions are still loading.
@@ -35,13 +36,19 @@ export default function Scanner() {
 
     const process = (data) => {
         const information = decodeMessage(data);
-        if (information[1] !== currentLabel) {
+        console.log("***informaion:***", information);
+        if (information!==null && !currentLabel.includes(information[1])) {
             updateAround(information[0]);
             updateControlPoint(information[3]);
+            updateLabel([...currentLabel,information[1]]);
             console.log("data:", information);
+            setNoValide(false);
             setShow(true)
         }
-        else setShowSnack(true);
+        else{
+            setNoValide(true);
+            setShowSnack(true);
+        }
 
         //router.back();
     }
@@ -64,7 +71,7 @@ export default function Scanner() {
                     </View>
                 </CameraView>
             }
-            {showSnack&&<Snack message={"You have already scanned this Qr"}/>}
+            {showSnack&&<Snack message={noValide===true?"No valid QrCode":"You have already scanned this Qr"}/>}
         </View>
     );
 }

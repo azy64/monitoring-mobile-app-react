@@ -21,14 +21,17 @@ const Login = () => {
     const loading = useGlobalStore(state => state.loading);
     const login = useGlobalStore(state => state.login);
     const user = useGlobalStore(state => state.user);
+    const updateLabel= useGlobalStore(state=>state.updateLabel);
     const updateShift = useGlobalStore(state=>state.updateShift);
+    const updateCheckPoint = useGlobalStore(state=>state.updateCheckPoint);
+    const updateError = useGlobalStore(state=>state.updateError);
 
     const onDismissSnackBar = () => setVisible(false);
 
     const onSubmit = (data) => {
         if (email && password) {
             login({ username: email, password });
-            if (user) {
+            if (user && user.phoneNumber) {
                 shiftCreationDate= new Date();
                 const shift={agent:{id:user.id}, 
                 shiftStartTime:shiftCreationDate, 
@@ -38,6 +41,9 @@ const Login = () => {
             }
                 console.log("shift:",shift);
                 updateShift(shift);
+                updateLabel("");
+                updateCheckPoint([]);
+                updateError({})
                 router.navigate("/main");
                 
             }

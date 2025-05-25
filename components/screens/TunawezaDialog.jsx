@@ -12,16 +12,24 @@ const TunawezaDialog = () => {
     const [selectValue, setSelectValue] = React.useState("");
     const checkPoints = useGlobalStore(State => State.checkPoints);
     const updateCheckPoint = useGlobalStore(state => state.updateCheckPoint);
+    const currentLabel = useGlobalStore(state => state.currentLabel);
     const user = useGlobalStore(state => state.user);
     const controlPoint = useGlobalStore(state => state.controlPoint);
+    const createCheckPoint = useGlobalStore(state=>state.createCheckPoint)
+    const token = useGlobalStore(state=>state.token);
     const router = useRouter();
 
     const done = () => {
         const checkPoint = {
-            checkedDate: new Date(),
+            checkedDate: new Date(),label:currentLabel[currentLabel.length-1],
             commentString: selectValue, checkedPresence: true, agent: { id: user.id }, controlPoint
         }
         updateCheckPoint([...checkPoints, checkPoint]);
+        const checkPointChanged={checkedDate: new Date(),commentString: selectValue, checkedPresence: true,
+            agent: { id: user.id }, controlPoint}
+        console.log("saving:",checkPointChanged);
+        createCheckPoint(token,checkPointChanged);
+        alert("checkpoint saved!")
         router.back();
     }
     const showDialog = () => setVisible(true);
